@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void btnCalcClick(View v){
         Intent calcIntent = new Intent(MainActivity.this, CalcActivity.class);
+        startActivity( calcIntent ) ;
     }
     private void btnExitClick(View v){
         finish();

@@ -7,4 +7,23 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    
+    <!--Calc colors-->
+    <color name="calc_background">#202020</color>
+
+    <color name="calc_history_text">#9B9B9B</color>
+    <color name="calc_result_text">#FEFEFE</color>
+
+    <color name="calc_group1_text">#EEEEEE</color>
+    <color name="calc_group1_stroke">#555555</color>
+    <color name="calc_group1_bg">#323232</color>
+
+
+    <color name="calc_group2_text">#FAFAFA</color>
+    <color name="calc_group2_stroke">#555555</color>
+    <color name="calc_group2_bg">#3B3B3B</color>
+
+    <color name="calc_equals_text">#1E201F</color>
+    <color name="calc_equals_stroke">#555555</color>
+    <color name="calc_equals_bg">#822E2E</color>
 </resources>
