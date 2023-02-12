@@ -26,10 +26,16 @@
     <string name="btn_division">÷</string>
     <string name="btn_multiplication">×</string>
     <string name="btn_addition">+</string>
-    <string name="btn_subtraction">-</string>
+    <string name="btn_subtraction">\u2212</string>
     <string name="btn_plus_minus">∓</string>
     <string name="btn_delimiter">,</string>
     <string name="btn_equals">=</string>
+    <!--Result string symbols-->
+    <string name="calc_minus">\u2212</string>
+    <string name="calc_delimiter">\u002C</string>
+    <!--Calc warnings-->
+    <string name="calc_divide_by_zero">Cannot divide by zero</string>
+    <string name="calc_sqr_minus">Invalid input</string>
 
 
 

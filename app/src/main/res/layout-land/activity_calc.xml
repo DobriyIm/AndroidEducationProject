@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CalcActivity"
+    android:orientation="vertical"
+    android:background="@color/calc_background">
+    
+    <TextView
+        android:id="@+id/tvHistory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:layout_marginEnd="25dp"
+        android:layout_marginTop="25dp"
+        android:textSize="25sp"
+        android:textColor="@color/calc_history_text"
+        android:text="56 - 98 ="/>
+
+    <TextView
+        android:id="@+id/tvResult"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:layout_marginEnd="25dp"
+        android:textSize="50sp"
+        android:textColor="@color/calc_result_text"
+        android:textStyle="bold"
+        android:text="-42"/>
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="0dp">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+
+            <Button
+                android:id="@+id/btnInverse"
+                style="@style/Group1Buttons"
+                android:text="@string/btn_inverse"/>
+
+            <Button
+                android:id="@+id/btnMultiplication"
+                style="@style/Group1Buttons"
+                android:text="@string/btn_multiplication"/>
+
+            <Button
+                android:id="@+id/btn7"
+                style="@style/Group2Buttons"
+                android:text="@string/btn_seven"/>
+
+            <Button
+                android:id="@+id/btn8"
+                style="@style/Group2Buttons"
+                android:text="@string/btn_eight"/>
+
+            <Button
+                android:id="@+id/btn9"
+                style="@style/Group2Buttons"
+                android:text="@string/btn_nine"/>
+
+            <Button
+                android:id="@+id/btnBackspace"
+                style="@style/Group1Buttons"
+                android:text="@string/btn_backspace"/>
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <Button
+                android:id="@+id/btnDegree"
+                style="@style/Group1Buttons"
+                android:text="@string/btn_degree"/>
+
+            <Button
+                android:id="@+id/btnSubtraction"
+                style="@style/Group1Buttons"
+                android:text="@string/btn_subtraction"/>
+
+            <Button
+                android:id="@+id/btn4"
+                style="@style/Group2Buttons"
+                android:text="@string/btn_four"/>
+
+            <Button
+                android:id="@+id/btn5"
+                style="@style/Group2Buttons"
+                android:text="@string/btn_five"/>
+
+            <Button
+                android:id="@+id/btn6"
+                style="@style/Group2Buttons"
+                android:text="@string/btn_six"/>
+
+            <Button
+                android:id="@+id/btnClearE"
+                style="@style/Group1Buttons"
+                android:text="@string/btn_clear_e"/>
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <Button
+                android:id="@+id/btnRoot"
+                style="@style/Group1Buttons"
+                android:text="@string/btn_root"/>
+
+            <Button
+                android:id="@+id/btnAddition"
+                style="@style/Group1Buttons"
+                android:text="@string/btn_addition" />
+
+            <Button
+                android:id="@+id/btn1"
+                style="@style/Group2Buttons"
+                android:text="@string/btn_one" />
+
+            <Button
+                android:id="@+id/btn2"
+                style="@style/Group2Buttons"
+                android:text="@string/btn_two"/>
+
+            <Button
+                android:id="@+id/btn3"
+                style="@style/Group2Buttons"
+                android:text="@string/btn_three"/>
+
+            <Button
+                android:id="@+id/btnClearAll"
+                style="@style/Group1Buttons"
+                android:text="@string/btn_clear_all"/>
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <Button
+                android:id="@+id/btnPercent"
+                style="@style/Group1Buttons"
+                android:text="@string/btn_percent"/>
+
+            <Button
+                android:id="@+id/btnDivision"
+                style="@style/Group1Buttons"
+                android:text="@string/btn_division"/>
+
+            <Button
+                android:id="@+id/btnPlusMinus"
+                style="@style/Group2Buttons"
+                android:text="@string/btn_plus_minus"/>
+
+            <Button
+                android:id="@+id/btn0"
+                style="@style/Group2Buttons"
+                android:text="@string/btn_zero"/>
+
+            <Button
+                android:id="@+id/btnDelimiter"
+                style="@style/Group2Buttons"
+                android:text="@string/btn_delimiter"/>
+
+            <Button
+                android:id="@+id/btnEquals"
+                style="@style/EqualButton"
+                android:text="@string/btn_equals"/>
+
+        </TableRow>
+
+    </TableLayout>
+
+</LinearLayout>
