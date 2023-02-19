@@ -3,7 +3,12 @@ package com.example.project1;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
+import android.os.VibratorManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -16,6 +21,10 @@ public class CalcActivity extends AppCompatActivity {
     private TextView tvResult;
     private String minusSign;
     private String delimiterSign;
+    private boolean needClearResult;
+    private boolean needClearHistory;
+    private double operand1;
+    private String operation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +49,16 @@ public class CalcActivity extends AppCompatActivity {
         findViewById(R.id.btnBackspace).setOnClickListener(this::backspaceClick);
         findViewById(R.id.btnInverse).setOnClickListener(this::inverseClick);
         findViewById(R.id.btnRoot).setOnClickListener(this::rootClick);
+        findViewById(R.id.btnClearE).setOnClickListener(this::clearEClick);
+        findViewById(R.id.btnClearAll).setOnClickListener(this::clearAllClick);
+        findViewById(R.id.btnEquals).setOnClickListener(this::equalClick);
+
+
+        findViewById(R.id.btnDivision).setOnClickListener(this::functionalBtnCluck);
+        findViewById(R.id.btnMultiplication).setOnClickListener(this::functionalBtnCluck);
+        findViewById(R.id.btnSubtraction).setOnClickListener(this::functionalBtnCluck);
+        findViewById(R.id.btnAddition).setOnClickListener(this::functionalBtnCluck);
+
     }
 
     @Override
@@ -57,18 +76,31 @@ public class CalcActivity extends AppCompatActivity {
         Log.d(CalcActivity.class.getName(), "Loaded!");
     }
 
+    //region Click
+
     private void digitClick(View v){
         String result = this.tvResult.getText().toString();
 
+        if(this.needClearResult){
+            this.needClearResult = false;
+            result = "0";
+        }
 
         if(result.replaceAll("[" + this.delimiterSign + this.minusSign +"]","").length() >= 10) return;
 
         String digit = ((Button)v).getText().toString();
 
-        if(result.equals("0"))
+        if(result.equals("0")) {
             result = digit;
+        }
         else
             result += digit;
+
+        if(this.needClearHistory){
+            this.tvHistory.setText("");
+            this.needClearHistory = false;
+
+        }
 
         this.tvResult.setText(result);
     }
@@ -95,6 +127,13 @@ public class CalcActivity extends AppCompatActivity {
 
     }
     private void backspaceClick(View v){
+        if(this.needClearHistory){
+            this.tvHistory.setText("");
+            this.needClearHistory = false;
+        }
+        if(this.needClearResult)
+            this.needClearResult = false;
+
         String result = this.tvResult.getText().toString();
 
         if(result.equals("0"))
@@ -112,7 +151,7 @@ public class CalcActivity extends AppCompatActivity {
         double d = this.toDoubleParser(result);
 
         if (d == 0) {
-            Toast.makeText(CalcActivity.this, R.string.calc_divide_by_zero, Toast.LENGTH_LONG).show();
+            this.Alert(R.string.calc_divide_by_zero);
             return;
         }
 
@@ -129,7 +168,7 @@ public class CalcActivity extends AppCompatActivity {
         double d = this.toDoubleParser(result);
 
         if(d < 0) {
-            Toast.makeText(CalcActivity.this, R.string.calc_sqr_minus, Toast.LENGTH_LONG).show();
+            this.Alert(R.string.calc_sqr_minus);
             return;
         }
 
@@ -138,13 +177,82 @@ public class CalcActivity extends AppCompatActivity {
         this.tvResult.setText(result);
 
     }
+    private void clearEClick(View v){
+        this.tvResult.setText("0");
+    }
+    private void clearAllClick(View v){
+        this.tvResult.setText("0");
+        this.tvHistory.setText("");
+    }
+    private void functionalBtnCluck(View v){
+        String fn = ((Button) v).getText().toString();
+        String result = this.tvResult.getText().toString();
+
+        String history = String.format("%s %s", result, fn);
+        this.tvHistory.setText(history);
+
+        this.needClearResult = true;
+        this.needClearHistory = false;
+
+        operation = fn;
+        operand1 = this.toDoubleParser(result);
+    }
+    private void equalClick(View v){
+        String result = this.tvResult.getText().toString();
+        String history = this.tvHistory.getText().toString();
+
+        tvHistory.setText(String.format("%s %s =", history, result));
+
+        double operand2 = this.toDoubleParser(result);
+
+        if(operation.equals(getString(R.string.btn_addition)))
+            this.tvResult.setText(this.toStringParser(operand1 + operand2));
+        else if(operation.equals(getString(R.string.btn_subtraction)))
+            this.tvResult.setText(this.toStringParser(operand1 - operand2));
+        else if(operation.equals(getString(R.string.btn_multiplication)))
+            this.tvResult.setText(this.toStringParser(operand1 * operand2));
+        else if(operation.equals(getString(R.string.btn_division)))
+            if(operand2 == 0)
+                this.Alert(R.string.calc_divide_by_zero);
+            else
+                this.tvResult.setText(this.toStringParser(operand1 / operand2));
+
+        this.needClearResult = true;
+        this.needClearHistory = true;
+    }
+
+    //endregion
+
+    //region Alert
+    private void Alert(int stringId){
+
+        Toast.makeText(CalcActivity.this, stringId, Toast.LENGTH_LONG).show();
+
+        Vibrator vibrator;
+
+        long[] vibrationPattern = {0,200,100,200};
+
+        if(Build.VERSION.SDK_INT >=Build.VERSION_CODES.S){
+            VibratorManager vibratorManager = (VibratorManager) getSystemService(Context.VIBRATOR_MANAGER_SERVICE);
+            vibrator = vibratorManager.getDefaultVibrator();
+        }
+        else
+            vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            vibrator.vibrate(VibrationEffect.createWaveform(vibrationPattern,-1));
+        else
+            vibrator.vibrate(vibrationPattern, -1);
+    }
+    //endregion
+
+    //region Parsers
 
     private double toDoubleParser(String str){
         if (str.contains(this.delimiterSign))
             str = str.replace(this.delimiterSign, ".");
         if (str.contains(this.minusSign))
             str = str.replace(this.minusSign, "-");
-        Log.d("toDoubleParser", str);
         return Double.parseDouble(str);
     }
     private String toStringParser(double d){
@@ -161,7 +269,8 @@ public class CalcActivity extends AppCompatActivity {
         }
         if(str.length() > maxLength)
             str = str.substring(0, maxLength);
-        Log.d("toStringParser", str);
         return str;
     }
+
+    //endregion
 }
