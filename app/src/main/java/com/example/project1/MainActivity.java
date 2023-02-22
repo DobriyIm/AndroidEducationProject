@@ -16,12 +16,17 @@ public class MainActivity extends AppCompatActivity {
 
         findViewById(R.id.calcBtn).setOnClickListener(this::btnCalcClick);
         findViewById(R.id.exitBtn).setOnClickListener(this::btnExitClick);
+        findViewById(R.id.gameBtn).setOnClickListener(this::btnGameClick);
 
     }
 
     private void btnCalcClick(View v){
         Intent calcIntent = new Intent(MainActivity.this, CalcActivity.class);
         startActivity( calcIntent ) ;
+    }
+    private void btnGameClick(View v){
+        Intent gameIntent = new Intent(MainActivity.this, GameActivity.class);
+        startActivity( gameIntent ) ;
     }
     private void btnExitClick(View v){
         finish();
