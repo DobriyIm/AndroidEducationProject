@@ -8,64 +8,66 @@ import android.view.View;
 import androidx.annotation.NonNull;
 
 public class OnSwipeListener implements View.OnTouchListener {
+    private final GestureDetector gestureDetector ;
 
-    private GestureDetector gestureDetector;
+    public void onSwipeLeft()   { }   // методи для перевантаження
+    public void onSwipeRight()  { }   // у інших класах (для вжитку)
+    public void onSwipeTop()    { }   // Даний клас має запускати ці
+    public void onSwipeBottom() { }   // методи за відповідними жестами
 
-    public void onSwipeLeft()   {};
-    public void onSwipeRight()   {};
-    public void onSwipeTop()   {};
-    public void onSwipeBottom()   {};
-
-    public OnSwipeListener(Context context){
-        this.gestureDetector = new GestureDetector(context, new GestureListener());
+    public OnSwipeListener( Context context ) {
+        this.gestureDetector = new GestureDetector( context, new GestureListener() ) ;
     }
-
     @Override
-    public boolean onTouch(View view, MotionEvent motionEvent) {
-        return this.gestureDetector.onTouchEvent(motionEvent);
+    public boolean onTouch( View view, MotionEvent motionEvent ) {
+        return this.gestureDetector.onTouchEvent( motionEvent ) ;
     }
 
-    private final class GestureListener extends GestureDetector.SimpleOnGestureListener{
-
-        private final static float MIN_SWIPE_DISTANCE = 100;
-        private final static float MIN_SWIPE_VELOCITY = 100;
-
+    private final class GestureListener extends GestureDetector.SimpleOnGestureListener {
+        private final static float MIN_SWIPE_DISTANCE = 100 ;     // мінімальна довжина руху, яка вважатиметься свайпом
+        private final static float MIN_SWIPE_VELOCITY = 100 ;     // мінімальна швидкість, повільніші рухи ігноруватимуться
         @Override
-        public boolean onFling(@NonNull MotionEvent e1, @NonNull MotionEvent e2, float velocityX, float velocityY) {
-            float dx = e2.getX() - e1.getX();
-            float dy = e2.getY() - e1.getY();
+        public boolean onFling( @NonNull MotionEvent e1,   // подія проведення по екрану
+                                @NonNull MotionEvent e2,   // е1 - точка початку проведення,
+                                float velocityX,           // е2 - точка кінця
+                                float velocityY ) {        // + швидкості руху по координатах
 
-            boolean result = false;
+            float dx = e2.getX() - e1.getX() ;  // відстань по Х проведення (руху по екрану)
+            float dy = e2.getY() - e1.getY() ;
+            // чутливі екрани часто сприймають дотик як флінг (на невелику відстань)
+            // для більш певного детектування свайпів слід задати обмеження по відстані і швидкості рухів
+            boolean result = false ;   // не будь-який флінг буде свайпом
 
-            if (Math.abs(dx) > Math.abs(dy)) {
-                if(dx >= MIN_SWIPE_DISTANCE && Math.abs(velocityX) >= MIN_SWIPE_VELOCITY){
-                    if(dx < 0){
-                        onSwipeLeft();
+            if( Math.abs( dx ) > Math.abs( dy ) ) {   // зміщення по горизонталі більше - горизонтальний свайп
+                if( Math.abs( dx ) >= MIN_SWIPE_DISTANCE
+                        && Math.abs( velocityX ) >= MIN_SWIPE_VELOCITY ) {
+                    if( dx < 0 ) {   // координата початку більша за коорд. кінця - рух ліворуч
+                        onSwipeLeft() ;
                     }
-                    else{
-                        onSwipeRight();
+                    else {
+                        onSwipeRight() ;
                     }
-                    result = true;
+                    result = true ;
                 }
             }
-            else{
-                if(dy >= MIN_SWIPE_DISTANCE && Math.abs(velocityY) >= MIN_SWIPE_VELOCITY){
-                    if(dy < 0){
-                        onSwipeTop();
+            else {  // вертикальний свайп
+                if( Math.abs( dy ) >= MIN_SWIPE_DISTANCE
+                        && Math.abs( velocityY ) >= MIN_SWIPE_VELOCITY ) {
+                    if( dy < 0 ) {
+                        onSwipeTop() ;
                     }
-                    else{
-                        onSwipeBottom();
+                    else {
+                        onSwipeBottom() ;
                     }
-                    result = true;
+                    result = true ;
                 }
             }
-
-            return  result;
+            return result ;
         }
 
         @Override
-        public boolean onDown(@NonNull MotionEvent e) {
-            return true;
+        public boolean onDown( @NonNull MotionEvent e ) {
+            return true ;   // ознака того, що наш обробник закінчив цю подію
         }
     }
 }
