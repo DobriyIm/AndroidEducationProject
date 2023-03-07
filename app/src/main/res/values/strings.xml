@@ -8,7 +8,25 @@
     <string name="exit_btn">Exit</string>
 
     <!--2048-->
+        <!--Score-->
+        <string name="tv_score_pattern">SCORE\n%d</string>
+        <string name="tv_best_score_pattern">BEST\n%d</string>
+    
+        <!--Win game-->
+        <string name="win_title">Win!</string>
+        <string name="win_message">You are win!</string>
+        <string name="win_btn_exit">Exit</string>
+        <string name="win_btn_continue">Continue</string>
+        <string name="win_btn_new_game">New game</string>
 
+        <!--New game-->
+        <string name="new_game_title">Start new game</string>
+        <string name="new_game_message">Are you sure you want to start a new game?</string>
+        <string name="new_game_btn_No">No</string>
+        <string name="new_game_btn_Yes">Yes</string>
+    
+    
+    
     <!--Calc-->
         <!--NumbersButtons-->
         <string name="btn_one">1</string>
