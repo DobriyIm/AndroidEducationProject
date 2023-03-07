@@ -40,6 +40,11 @@
             android:layout_height="wrap_content"
             android:text="@string/game_btn"/>
         <Button
+            android:id="@+id/ratesBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/rates_btn"/>
+        <Button
             android:id="@+id/exitBtn"
             android:layout_marginTop="50dp"
             android:layout_width="wrap_content"

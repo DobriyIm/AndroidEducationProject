@@ -5,61 +5,63 @@
     <string name="tv_hello_content">Android basics!</string>
     <string name="calc_btn">Calculator</string>
     <string name="game_btn">2048</string>
+    <string name="rates_btn">Rates</string>
     <string name="exit_btn">Exit</string>
 
     <!--2048-->
-        <!--Score-->
-        <string name="tv_score_pattern">SCORE\n%d</string>
-        <string name="tv_best_score_pattern">BEST\n%d</string>
-    
-        <!--Win game-->
-        <string name="win_title">Win!</string>
-        <string name="win_message">You are win!</string>
-        <string name="win_btn_exit">Exit</string>
-        <string name="win_btn_continue">Continue</string>
-        <string name="win_btn_new_game">New game</string>
+    <!--Score-->
+    <string name="tv_score_pattern">SCORE\n%d</string>
+    <string name="tv_best_score_pattern">BEST\n%d</string>
+    <!--Win game-->
+    <string name="win_title">Win!</string>
+    <string name="win_message">You are win!</string>
+    <string name="win_btn_exit">Exit</string>
+    <string name="win_btn_continue">Continue</string>
+    <string name="win_btn_new_game">New game</string>
+    <!--New game-->
+    <string name="new_game_title">Start new game</string>
+    <string name="new_game_message">Are you sure you want to start a new game?</string>
+    <string name="new_game_btn_No">No</string>
+    <string name="new_game_btn_Yes">Yes</string>
 
-        <!--New game-->
-        <string name="new_game_title">Start new game</string>
-        <string name="new_game_message">Are you sure you want to start a new game?</string>
-        <string name="new_game_btn_No">No</string>
-        <string name="new_game_btn_Yes">Yes</string>
-    
-    
-    
+
     <!--Calc-->
-        <!--NumbersButtons-->
-        <string name="btn_one">1</string>
-        <string name="btn_two">2</string>
-        <string name="btn_three">3</string>
-        <string name="btn_four">4</string>
-        <string name="btn_five">5</string>
-        <string name="btn_six">6</string>
-        <string name="btn_seven">7</string>
-        <string name="btn_eight">8</string>
-        <string name="btn_nine">9</string>
-        <string name="btn_zero">0</string>
-        <!--ElseButtons-->
-        <string name="btn_percent">%</string>
-        <string name="btn_clear_e">CE</string>
-        <string name="btn_clear_all">C</string>
-        <string name="btn_backspace">⌫</string>
-        <string name="btn_inverse">¹/ₓ</string>
-        <string name="btn_degree">ₓ²</string>
-        <string name="btn_root">²√ₓ</string>
-        <string name="btn_division">÷</string>
-        <string name="btn_multiplication">×</string>
-        <string name="btn_addition">+</string>
-        <string name="btn_subtraction">\u2212</string>
-        <string name="btn_plus_minus">∓</string>
-        <string name="btn_delimiter">,</string>
-        <string name="btn_equals">=</string>
-        <!--Result string symbols-->
-        <string name="calc_minus">\u2212</string>
-        <string name="calc_delimiter">\u002C</string>
-        <!--Calc warnings-->
-        <string name="calc_divide_by_zero">Cannot divide by zero</string>
-        <string name="calc_sqr_minus">Invalid input</string>
+    <!--NumbersButtons-->
+    <string name="btn_one">1</string>
+    <string name="btn_two">2</string>
+    <string name="btn_three">3</string>
+    <string name="btn_four">4</string>
+    <string name="btn_five">5</string>
+    <string name="btn_six">6</string>
+    <string name="btn_seven">7</string>
+    <string name="btn_eight">8</string>
+    <string name="btn_nine">9</string>
+    <string name="btn_zero">0</string>
+    <!--ElseButtons-->
+    <string name="btn_percent">%</string>
+    <string name="btn_clear_e">CE</string>
+    <string name="btn_clear_all">C</string>
+    <string name="btn_backspace">⌫</string>
+    <string name="btn_inverse">¹/ₓ</string>
+    <string name="btn_degree">ₓ²</string>
+    <string name="btn_root">²√ₓ</string>
+    <string name="btn_division">÷</string>
+    <string name="btn_multiplication">×</string>
+    <string name="btn_addition">+</string>
+    <string name="btn_subtraction">\u2212</string>
+    <string name="btn_plus_minus">∓</string>
+    <string name="btn_delimiter">,</string>
+    <string name="btn_equals">=</string>
+    <!--Result string symbols-->
+    <string name="calc_minus">\u2212</string>
+    <string name="calc_delimiter">\u002C</string>
+    <!--Calc warnings-->
+    <string name="calc_divide_by_zero">Cannot divide by zero</string>
+    <string name="calc_sqr_minus">Invalid input</string>
+
+    <!--Rates-->
+    <string name="rates_title">Currency rates</string>
+
 
 
 </resources>
