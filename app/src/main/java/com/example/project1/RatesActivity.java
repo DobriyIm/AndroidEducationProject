@@ -1,9 +1,13 @@
 package com.example.project1;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -17,6 +21,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class RatesActivity extends AppCompatActivity {
 
@@ -30,7 +35,7 @@ public class RatesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rates);
 
-        this.tvContent = findViewById(R.id.tv_rates_content);
+        //this.tvContent = findViewById(R.id.tv_rates_content);
 
         new Thread(this::loadUrl).start();
     }
@@ -56,8 +61,50 @@ public class RatesActivity extends AppCompatActivity {
     }
 
     private void showContent(){
-        this.ratesToString();
-        this.tvContent.setText(content);
+        //this.ratesToString();
+
+        LinearLayout ratesContainer = findViewById(R.id.rates_container);
+
+        Drawable rateBgL = AppCompatResources.getDrawable(getApplicationContext(), R.drawable.rates_shape_l);
+        Drawable rateBgR = AppCompatResources.getDrawable(getApplicationContext(), R.drawable.rates_shape_r);
+
+
+        LinearLayout.LayoutParams rateLParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        rateLParams.setMargins(10,7,10,7);
+
+        LinearLayout.LayoutParams rateRParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+                );
+        rateRParams.setMargins(10,7,10,7);
+        rateRParams.gravity = Gravity.END;
+
+        for(Rate rate: this.rates){
+
+            TextView tvRate = new TextView(this);
+
+            if(new Random().nextBoolean() == true){
+                tvRate.setTextSize(18);
+                tvRate.setText(rate.getTxt());
+                tvRate.setBackground(rateBgL);
+                tvRate.setPadding(15,5,15,5);
+                tvRate.setLayoutParams(rateLParams);
+                ratesContainer.addView(tvRate);
+            }
+            else{
+                tvRate.setTextSize(18);
+                tvRate.setText(rate.getTxt());
+                tvRate.setBackground(rateBgR);
+                tvRate.setPadding(15,5,15,5);
+                tvRate.setLayoutParams(rateRParams);
+                ratesContainer.addView(tvRate);
+            }
+
+
+        }
     }
 
     private void ratesToString(){
@@ -110,6 +157,8 @@ public class RatesActivity extends AppCompatActivity {
             this.setCc(obj.getString("cc"));
             this.setExchangeDate(obj.getString("exchangedate"));
         }
+
+
 
         public int getR030() {
             return r030;

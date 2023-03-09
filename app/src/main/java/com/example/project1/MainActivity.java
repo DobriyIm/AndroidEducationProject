@@ -18,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.exitBtn).setOnClickListener(this::btnExitClick);
         findViewById(R.id.gameBtn).setOnClickListener(this::btnGameClick);
         findViewById(R.id.ratesBtn).setOnClickListener(this::btnRatesClick);
+        findViewById(R.id.chatBtn).setOnClickListener(this::btnChatClick);
 
     }
 
@@ -32,6 +33,10 @@ public class MainActivity extends AppCompatActivity {
     private void btnRatesClick(View v){
         Intent ratesIntent = new Intent(MainActivity.this, RatesActivity.class);
         startActivity( ratesIntent ) ;
+    }
+    private void btnChatClick(View v){
+        Intent chatIntent = new Intent(MainActivity.this, ChatActivity.class);
+        startActivity( chatIntent ) ;
     }
 
     private void btnExitClick(View v){

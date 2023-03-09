@@ -44,4 +44,12 @@
     <color name="calc_equals_text">#1E201F</color>
     <color name="calc_equals_stroke">#555555</color>
     <color name="calc_equals_bg">#822E2E</color>
+
+    <!--Rates-->
+    <color name="rate_bg_l_color">#CFAFAF</color>
+    <color name="rate_bg_r_color">#AFC1CF</color>
+
+    <!--Chat-->
+    <color name="chat_frame_border">#AACF9B</color>
+
 </resources>

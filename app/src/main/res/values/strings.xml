@@ -6,6 +6,7 @@
     <string name="calc_btn">Calculator</string>
     <string name="game_btn">2048</string>
     <string name="rates_btn">Rates</string>
+    <string name="chat_btn">Chat</string>
     <string name="exit_btn">Exit</string>
 
     <!--2048-->
@@ -62,6 +63,11 @@
     <!--Rates-->
     <string name="rates_title">Currency rates</string>
 
+    <!--Chat-->
+    <string name="chat_user_name_title">User:</string>
+    <string name="chat_default_user">Dobriy</string>
+    <string name="chat_message_title">Msg:</string>
+    <string name="chat_default_message">HHH</string>
 
 
 </resources>
