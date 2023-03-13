@@ -1,16 +1,27 @@
 package com.example.project1;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
+import android.Manifest;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,80 +43,96 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Random;
 import java.util.UUID;
 
 public class ChatActivity extends AppCompatActivity {
 
-    private final String CHAT_URL = "https://express-messages-api.onrender.com" ;
+    private final String CHAT_URL = "https://express-messages-api.onrender.com";
+    private final String CHANNEL_ID = "CHAT_NOTIFY";
     private String content;
     private List<ChatMessage> chatMessages;
     private ChatMessage userMessage;
 
     private LinearLayout chatContainer;
+    private ScrollView svContainer;
     private EditText etUserName;
     private EditText etUserMessage;
 
-
+    private Handler handler;
+    private MediaPlayer incomingMessagePlayer;
 
 
     @Override
-    protected void onCreate( Bundle savedInstanceState ) {
-        super.onCreate( savedInstanceState );
-        setContentView( R.layout.activity_chat );
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_chat);
 
-        new Thread( this::loadUrl ).start();
+        this.chatMessages = new ArrayList<ChatMessage>();
 
-        this.chatContainer = findViewById( R.id.chat_container );
-        this.etUserName = findViewById( R.id.et_chat_user_name );
-        this.etUserMessage = findViewById( R.id.et_chat_message );
+        this.handler = new Handler();
+        this.handler.post( this::updateChat );
 
-        findViewById(R.id.btn_chat_send).setOnClickListener( this::sendButtonClick );
+        this.incomingMessagePlayer = MediaPlayer.create( this, R.raw.sound_1 );
+
+        new Thread(this::loadUrl).start();
+
+        this.chatContainer = findViewById(R.id.chat_container);
+        this.etUserName = findViewById(R.id.et_chat_user_name);
+        this.etUserMessage = findViewById(R.id.et_chat_message);
+        this.svContainer = findViewById(R.id.sv_container);
+
+        findViewById(R.id.btn_chat_send).setOnClickListener(this::sendButtonClick);
     }
 
-    private void sendButtonClick( View view ){
+    private void sendButtonClick(View view) {
 
         String author = this.etUserName.getText().toString();
-        if( author.isEmpty() ) {
-            Toast.makeText( this, "Enter author name", Toast.LENGTH_SHORT ).show();
+        if (author.isEmpty()) {
+            Toast.makeText(this, "Enter author name", Toast.LENGTH_SHORT).show();
             this.etUserName.requestFocus();
             return;
         }
 
         String messageText = this.etUserMessage.getText().toString();
-        if( messageText.isEmpty() ){
-            Toast.makeText( this, "Enter message text", Toast.LENGTH_SHORT ).show();
+        if (messageText.isEmpty()) {
+            Toast.makeText(this, "Enter message text", Toast.LENGTH_SHORT).show();
             this.etUserMessage.requestFocus();
             return;
         }
+        etUserMessage.setText("");
 
         this.userMessage = new ChatMessage();
-        this.userMessage.setAuthor( author );
-        this.userMessage.setText( messageText );
+        this.userMessage.setAuthor(author);
+        this.userMessage.setText(messageText);
 
-        new Thread( this::postUserMessage ).start();
+        new Thread(this::postUserMessage).start();
+    }
+
+    private void updateChat(){
+        new Thread( this::loadUrl ).start();
+        this.handler.postDelayed( this::updateChat, 3000 );
     }
 
     private void postUserMessage() {
         try {
 
-            URL chatUrl = new URL( CHAT_URL );
-            HttpURLConnection connection = ( HttpURLConnection ) chatUrl.openConnection();
-            connection.setDoOutput( true );
-            connection.setDoInput( true ) ;
-            connection.setRequestMethod( "POST" );
-            connection.setRequestProperty( "Content-Type", "application/json" );
-            connection.setRequestProperty( "Accept", "*/*" );
-            connection.setChunkedStreamingMode( 0 );
+            URL chatUrl = new URL(CHAT_URL);
+            HttpURLConnection connection = (HttpURLConnection) chatUrl.openConnection();
+            connection.setDoOutput(true);
+            connection.setDoInput(true);
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setRequestProperty("Accept", "*/*");
+            connection.setChunkedStreamingMode(0);
 
             OutputStream body = connection.getOutputStream();
-            body.write( userMessage.toJsonString().getBytes() );
+            body.write(userMessage.toJsonString().getBytes());
             body.flush();
             body.close();
 
             int responseCode = connection.getResponseCode();
-            if( responseCode >= 400 ) {
-                Log.d( "postUserMessage", "Request fails with code " + responseCode );
+            if (responseCode >= 400) {
+                Log.d("postUserMessage", "Request fails with code " + responseCode);
                 return;
             }
 
@@ -113,53 +140,50 @@ public class ChatActivity extends AppCompatActivity {
             ByteArrayOutputStream bytes = new ByteArrayOutputStream();
             byte[] chunk = new byte[4096];
             int len;
-            while( ( len = response.read( chunk ) ) != -1 ){
-                bytes.write( chunk, 0, len );
+            while ((len = response.read(chunk)) != -1) {
+                bytes.write(chunk, 0, len);
             }
 
-            String responseBody = new String( bytes.toByteArray(), StandardCharsets.UTF_8 );
-            Log.i( "postUserMessage", responseBody );
+            String responseBody = new String(bytes.toByteArray(), StandardCharsets.UTF_8);
+            Log.i("postUserMessage", responseBody);
 
 
             bytes.close();
             response.close();
             connection.disconnect();
 
-            new Thread( this::loadUrl ).start();
+            new Thread(this::loadUrl).start();
 
-        }catch ( Exception ex ) {
+        } catch (Exception ex) {
 
-            Log.d( "postUserMessage", ex.getMessage() );
+            Log.d("postUserMessage", ex.getMessage());
 
         }
     }
 
 
     private void loadUrl() {
-        try(InputStream urlStream = new URL(this.CHAT_URL).openStream()){
+        try (InputStream urlStream = new URL(this.CHAT_URL).openStream()) {
             ByteArrayOutputStream bytes = new ByteArrayOutputStream();
             byte[] chunk = new byte[4096];
             int len;
-            while( ( len = urlStream.read( chunk ) ) != -1 ){
-                bytes.write( chunk, 0, len );
+            while ((len = urlStream.read(chunk)) != -1) {
+                bytes.write(chunk, 0, len);
             }
-            this.content = new String( bytes.toByteArray(), StandardCharsets.UTF_8 );
+            this.content = new String(bytes.toByteArray(), StandardCharsets.UTF_8);
             bytes.close();
 
             new Thread(this::parseContent).start();
-        }
-        catch (MalformedURLException ex){
+        } catch (MalformedURLException ex) {
             Log.d("loadUrl", "MalformedURLException: " + ex.getMessage());
-        }
-        catch (IOException ex){
+        } catch (IOException ex) {
             Log.d("loadUrl", "IOException: " + ex.getMessage());
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             Log.d("loadUrl", "Exception: " + ex.getMessage());
         }
     }
 
-    private void showContent1(){
+    private void showContent1() {
         LinearLayout ratesContainer = findViewById(R.id.chat_container);
 
         Drawable otherBg = AppCompatResources.getDrawable(getApplicationContext(), R.drawable.rates_shape_l);
@@ -170,33 +194,32 @@ public class ChatActivity extends AppCompatActivity {
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
-        rateLParams.setMargins(10,7,10,7);
+        rateLParams.setMargins(10, 7, 10, 7);
 
         LinearLayout.LayoutParams rateRParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
-        rateRParams.setMargins(10,7,10,7);
+        rateRParams.setMargins(10, 7, 10, 7);
         rateRParams.gravity = Gravity.END;
 
-        for(ChatMessage message: this.chatMessages){
+        for (ChatMessage message : this.chatMessages) {
 
             TextView tvRate = new TextView(this);
 
 
-            if(message.getAuthor() == this.etUserName.getText().toString()){
+            if (message.getAuthor() == this.etUserName.getText().toString()) {
                 tvRate.setTextSize(18);
-                tvRate.setText( message.getAuthor() + ": " + message.getText() );
+                tvRate.setText(message.getAuthor() + ": " + message.getText());
                 tvRate.setBackground(otherBg);
-                tvRate.setPadding(15,5,15,5);
+                tvRate.setPadding(15, 5, 15, 5);
                 tvRate.setLayoutParams(rateLParams);
                 ratesContainer.addView(tvRate);
-            }
-            else{
+            } else {
                 tvRate.setTextSize(18);
-                tvRate.setText( message.getAuthor() + ": " + message.getText() );
+                tvRate.setText(message.getAuthor() + ": " + message.getText());
                 tvRate.setBackground(myBg);
-                tvRate.setPadding(15,5,15,5);
+                tvRate.setPadding(15, 5, 15, 5);
                 tvRate.setLayoutParams(rateRParams);
                 ratesContainer.addView(tvRate);
             }
@@ -204,7 +227,8 @@ public class ChatActivity extends AppCompatActivity {
 
         }
     }
-    private void showContent(){
+
+    private void showChatMessages() {
         String author = this.etUserName.getText().toString();
 
         Drawable otherBg = AppCompatResources.getDrawable(getApplicationContext(), R.drawable.rates_shape_l);
@@ -214,33 +238,47 @@ public class ChatActivity extends AppCompatActivity {
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
-        otherParams.setMargins(10,7,10,7);
+        otherParams.setMargins(10, 7, 10, 7);
 
         LinearLayout.LayoutParams myParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
-        myParams.setMargins(10,7,10,7);
+        myParams.setMargins(10, 7, 10, 7);
         myParams.gravity = Gravity.END;
 
-        for( ChatMessage chatMessage : this.chatMessages ) {
-            TextView tvMessage = new TextView( this );
-            tvMessage.setText(String.format( "[%s]\n%s",
+        boolean needScroll = false;
+
+        for (ChatMessage chatMessage : this.chatMessages) {
+
+            if (chatMessage.getView() != null) continue;
+
+            TextView tvMessage = new TextView(this);
+            tvMessage.setText(String.format("[%s]\n%s",
                     chatMessage.getAuthor(),
                     chatMessage.getText()));
             tvMessage.setTextSize(18);
-            tvMessage.setPadding(15,5,15,5);
+            tvMessage.setPadding(15, 5, 15, 5);
             tvMessage.setLayoutParams(
                     author.equals(chatMessage.getAuthor())
-                    ? myParams : otherParams
+                            ? myParams : otherParams
             );
             tvMessage.setBackground(
                     author.equals(chatMessage.getAuthor())
-                    ? myBg : otherBg
+                            ? myBg : otherBg
             );
             chatContainer.addView(tvMessage);
+            chatMessage.setView(tvMessage);
+            tvMessage.setTag(chatMessage);
+            needScroll = true;
+        }
+
+        if (needScroll) {
+            this.svContainer.post(() -> this.svContainer.fullScroll(View.FOCUS_DOWN));
+            this.incomingMessagePlayer.start();
         }
     }
+
     /*private void showChatMessages() {
         String author = etUserName.getText().toString();
 
@@ -295,18 +333,18 @@ public class ChatActivity extends AppCompatActivity {
     }
      */
 
-    private void parseContent(){
+    private void parseContent() {
         try {
-            JSONObject object = new JSONObject (this.content);
+            JSONObject object = new JSONObject(this.content);
 
             JSONArray array = object.getJSONArray("data");
-
-            this.chatMessages = new ArrayList<ChatMessage>();
 
             int len = array.length();
 
             for (int i = 0; i < len; ++i) {
-                this.chatMessages.add( new ChatMessage( array.getJSONObject( i ) ) );
+                ChatMessage tmp = new ChatMessage(array.getJSONObject(i));
+                if (this.chatMessages.stream().noneMatch(cm -> cm.getId().equals(tmp.getId())))
+                    this.chatMessages.add(tmp);
             }
 
         } catch (JSONException e) {
@@ -314,10 +352,56 @@ public class ChatActivity extends AppCompatActivity {
             return;
         }
 
-        runOnUiThread( this::showContent );
+        runOnUiThread(this::showChatMessages);
+    }
+
+    private void showNotification() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = getString(R.string.channel_name);
+            String description = getString(R.string.channel_description);
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(this.CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+
+        NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(ChatActivity.this, this.CHANNEL_ID)
+                        .setSmallIcon(android.R.drawable.sym_def_app_icon)
+                        .setContentTitle("Chat")
+                        .setContentText("New message in chat")
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        Notification notification = builder.build();
+
+        NotificationManagerCompat notificationManagerCompat =
+                NotificationManagerCompat.from(ChatActivity.this);
+
+        if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
+            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(
+                        ChatActivity.this,
+                        new String[]{Manifest.permission.POST_NOTIFICATIONS},
+                        10002
+                );
+                return;
+            }
+        }
+        notificationManagerCompat.notify(1002, notification);
+    }
+
+    public void onRequestPermissionsResult( int requestCode, String[] permissions, int[] grantResults) {
+
+        super.onRequestPermissionsResult( requestCode, permissions, grantResults );
+
+        if( requestCode == 10002) {
+
+        }
     }
 
     private static class ChatMessage{
+        private View view;
         private UUID id;
         private String author;
         private String text;
@@ -340,10 +424,11 @@ public class ChatActivity extends AppCompatActivity {
                 try {
                     this.setMoment(scanFormat.parse(object.getString("moment")));
                 } catch (ParseException e) {
-                    throw new JSONException("Date format parse error: " + object.getString("moment"));
+                    throw new JSONException("Date format parse error: " + object.getString("moment") + " | " + e.getMessage());
                 }
             }
              */
+
 
             if( object.has("idReply") )
                 this.setIdReply( UUID.fromString( object.getString( "idReply" ) ) );
@@ -362,6 +447,13 @@ public class ChatActivity extends AppCompatActivity {
             return sb.toString();
         }
 
+        public View getView() {
+            return view;
+        }
+
+        public void setView(View view) {
+            this.view = view;
+        }
         public UUID getId() {
             return id;
         }
